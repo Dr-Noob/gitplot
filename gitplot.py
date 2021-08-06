@@ -91,6 +91,8 @@ for c in commits.splitlines():
 loc_c = np.flip(loc_c)
 loc_h = np.flip(loc_h)
 loc_makefile = np.flip(loc_makefile)
+loc_md = np.flip(loc_md)
+
 x = np.arange(0, np.size(loc_c))
     
 plt.plot(x, loc_c, label=".c")
