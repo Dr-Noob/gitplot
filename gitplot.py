@@ -102,7 +102,8 @@ for i in range(0, N_LANGUAGES):
 x = np.arange(0, np.size(loc_list[0]))
     
 for i in range(0, N_LANGUAGES):
-  plt.plot(x, loc_list[i], label=lang_name[i])
+    if any(loc_list[i]):
+        plt.plot(x, loc_list[i], label=lang_name[i])
 
 plt.plot()
 
