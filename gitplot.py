@@ -71,45 +71,39 @@ proc = subprocess.Popen(["/usr/bin/git", "rev-list", "--remotes"], stdout=subpro
 (commits, err) = proc.communicate()    
 
 ##############################
-# 2. Count lines
-loc_c=[]
-loc_h=[]
-loc_makefile=[]
-loc_md=[]
-loc_py=[]
+# 2. Init language structures lines        
+lang_ext = [".c", ".h", "Makefile", ".md", ".py"]
+lang_name = [".c", ".h", "Makefile", "Markdown", "Python"]
+assert(len(lang_ext) == len(lang_name))
+
+N_LANGUAGES = len(lang_name)
+
+loc_list = []
+for i in range(0, N_LANGUAGES):
+    loc_list.append([])
+
+##############################
+# 3. Count lines
 
 for c in commits.splitlines():     
     proc = subprocess.Popen(["/usr/bin/git", "checkout", c], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     proc.communicate()        
     
-    loc_c.append(loc_count(".", ".c"))
-    loc_h.append(loc_count(".", ".h"))
-    loc_makefile.append(loc_count(".", "Makefile"))
-    loc_md.append(loc_count(".", ".md"))
-    loc_py.append(loc_count(".", ".py"))
-    
-loc_c = np.asarray(loc_c)
-loc_h = np.asarray(loc_h)
-loc_makefile = np.asarray(loc_makefile)
-loc_md = np.asarray(loc_md)
-loc_py = np.asarray(loc_py)
-    
+    for i in range(0, N_LANGUAGES):
+        loc_list[i].append(loc_count(".", lang_ext[i]))
+
 ##############################
-# 3. Flip the lists and plot the results
-loc_c = np.flip(loc_c)
-loc_h = np.flip(loc_h)
-loc_makefile = np.flip(loc_makefile)
-loc_md = np.flip(loc_md)
-loc_py = np.flip(loc_py)
+# 4. Flip the lists and plot the results                           
+for i in range(0, N_LANGUAGES):
+    loc_list[i] = np.asarray(loc_list[i])                           
+    loc_list[i] = np.flip(loc_list[i])
 
 # Any list works, as we only need the length
-x = np.arange(0, np.size(loc_c))
+x = np.arange(0, np.size(loc_list[0]))
     
-plt.plot(x, loc_c, label=".c")
-plt.plot(x, loc_h, label=".h")
-plt.plot(x, loc_makefile, label="Makefile")
-plt.plot(x, loc_md, label="Markdown")
-plt.plot(x, loc_py, label="Python")
+for i in range(0, N_LANGUAGES):
+  plt.plot(x, loc_list[i], label=lang_name[i])
+
 plt.plot()
 
 plt.xlabel("Commit number")
