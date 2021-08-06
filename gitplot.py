@@ -72,8 +72,8 @@ proc = subprocess.Popen(["/usr/bin/git", "rev-list", "--remotes"], stdout=subpro
 
 ##############################
 # 2. Init language structures lines        
-lang_ext = [".c", ".h", "Makefile", ".md", ".py"]
-lang_name = [".c", ".h", "Makefile", "Markdown", "Python"]
+lang_ext = [".c", ".h", "Makefile", ".md", ".py", ".tex", ".sh"]
+lang_name = [".c", ".h", "Makefile", "Markdown", "Python", "LaTeX", "Shell"]
 assert(len(lang_ext) == len(lang_name))
 
 N_LANGUAGES = len(lang_name)
