@@ -22,7 +22,7 @@ def loc_count(dir, extension):
             if file.endswith(extension):
                 file_path = os.path.join(r, file)
                 len += file_len(file_path)
-                
+                               
     return len            
 
 ##############################
@@ -72,33 +72,44 @@ proc = subprocess.Popen(["/usr/bin/git", "rev-list", "--remotes"], stdout=subpro
 
 ##############################
 # 2. Count lines
-loc_c=np.array([])
-loc_h=np.array([])
-loc_makefile=np.array([])
-loc_md=np.array([])
+loc_c=[]
+loc_h=[]
+loc_makefile=[]
+loc_md=[]
+loc_py=[]
 
 for c in commits.splitlines():     
     proc = subprocess.Popen(["/usr/bin/git", "checkout", c], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     proc.communicate()        
     
-    loc_c = np.append(loc_c, loc_count(".", ".c"))
-    loc_h = np.append(loc_h, loc_count(".", ".h"))
-    loc_makefile = np.append(loc_makefile, loc_count(".", "Makefile"))
-    loc_md = np.append(loc_md, loc_count(".", ".md"))
+    loc_c.append(loc_count(".", ".c"))
+    loc_h.append(loc_count(".", ".h"))
+    loc_makefile.append(loc_count(".", "Makefile"))
+    loc_md.append(loc_count(".", ".md"))
+    loc_py.append(loc_count(".", ".py"))
+    
+loc_c = np.asarray(loc_c)
+loc_h = np.asarray(loc_h)
+loc_makefile = np.asarray(loc_makefile)
+loc_md = np.asarray(loc_md)
+loc_py = np.asarray(loc_py)
     
 ##############################
-# 3. ???
+# 3. Flip the lists and plot the results
 loc_c = np.flip(loc_c)
 loc_h = np.flip(loc_h)
 loc_makefile = np.flip(loc_makefile)
 loc_md = np.flip(loc_md)
+loc_py = np.flip(loc_py)
 
+# Any list works, as we only need the length
 x = np.arange(0, np.size(loc_c))
     
 plt.plot(x, loc_c, label=".c")
 plt.plot(x, loc_h, label=".h")
 plt.plot(x, loc_makefile, label="Makefile")
 plt.plot(x, loc_md, label="Markdown")
+plt.plot(x, loc_py, label="Python")
 plt.plot()
 
 plt.xlabel("Commit number")
